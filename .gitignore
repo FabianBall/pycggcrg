@@ -30,3 +30,20 @@
 *.exe
 *.out
 *.app
+
+# Python stuff
+# Package related
+*.egg-info*
+build/
+dist/
+docs/doctrees
+
+# Binaries
+*.pyc
+
+# PyCharm
+.idea
+
+# cggc_rg
+/cggc_rg
+/pycggcrg/cggc_rg.cpp

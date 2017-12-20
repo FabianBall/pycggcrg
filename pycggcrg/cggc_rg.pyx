@@ -61,11 +61,13 @@ cdef class RGGraph:
 
 
 cdef class RGAlgorithms:
-    cdef cggc_rg.ModOptimizer * _thisptr
+    cdef cggc_rg.ModOptimizer *_thisptr
+    cdef cggc_rg.Graph *_graph
 
     def __cinit__(self, RGGraph graph):
         cdef cggc_rg.Graph *g = graph.get_graph()
 
+        self._graph = g
         self._thisptr = new cggc_rg.ModOptimizer(g)
 
     def __dealloc__(self):
@@ -73,18 +75,21 @@ cdef class RGAlgorithms:
             del self._thisptr
 
     def run_rg(self, int sample_size, int runs):
-        return self._thisptr.ClusterRG(sample_size, runs)
+        self._thisptr.ClusterRG(sample_size, runs)
 
     def run_cggc_rg(self, int ensemble_size, int sample_size_restart):
-        return self._thisptr.ClusterCGGC(ensemble_size, sample_size_restart, 0)
+        self._thisptr.ClusterCGGC(ensemble_size, sample_size_restart, 0)
 
     def run_cggci_rg(self, int ensemble_size, int sample_size_restart):
-        return self._thisptr.ClusterCGGC(ensemble_size, sample_size_restart, 1)
+        self._thisptr.ClusterCGGC(ensemble_size, sample_size_restart, 1)
+
+    def get_modularity(self):
+        return self._thisptr.GetModularityFromClustering(self._graph, self._thisptr.GetClusters())
 
     def get_partition(self):
         cdef cggc_rg.t_partition *partition
         cdef cggc_rg.t_id_list *cluster
-        partition = self._thisptr.get_clusters().get_partition_vector()
+        partition = self._thisptr.GetClusters().get_partition_vector()
 
         py_partition = []
         for i in range(partition.capacity()):

@@ -41,7 +41,8 @@ def run_rg(g, sample_size=2, runs=1, return_partition=False):
     """
     algo = RGAlgorithms(g)
 
-    modularity = algo.run_rg(sample_size, runs)
+    algo.run_rg(sample_size, runs)
+    modularity = algo.get_modularity()
 
     if return_partition:
         partition = algo.get_partition()
@@ -69,7 +70,8 @@ def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=Fa
     if not ensemble_size:
         ensemble_size = int(ceil(log(g.n)))
 
-    modularity = algo.run_cggc_rg(ensemble_size, sample_size_restart)
+    algo.run_cggc_rg(ensemble_size, sample_size_restart)
+    modularity = algo.get_modularity()
 
     if return_partition:
         partition = algo.get_partition()
@@ -97,7 +99,8 @@ def run_cggcirg(g, ensemble_size=None, sample_size_restart=2, return_partition=F
     if not ensemble_size:
         ensemble_size = int(ceil(log(g.n)))
 
-    modularity = algo.run_cggci_rg(ensemble_size, sample_size_restart)
+    algo.run_cggci_rg(ensemble_size, sample_size_restart)
+    modularity = algo.get_modularity()
 
     if return_partition:
         partition = algo.get_partition()

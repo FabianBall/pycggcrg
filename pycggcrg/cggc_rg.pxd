@@ -27,8 +27,8 @@ cdef extern from 'modoptimizer.h':
     cdef cppclass ModOptimizer:
         ModOptimizer(Graph* graph) except +
 
-        Partition* get_clusters() except +
+        Partition* GetClusters() except +
 
-        double ClusterRG(int sample_size, int runs) except +
-        double ClusterCGGC(int ensemble_size, int sample_size_restart, bint iterative) except +
-        # double GetModularityFromClustering(Graph* graph, Partition* clusters) except +
+        void ClusterRG(int sample_size, int runs) except +
+        void ClusterCGGC(int ensemble_size, int sample_size_restart, bint iterative) except +
+        double GetModularityFromClustering(Graph* graph, Partition* clusters) except +

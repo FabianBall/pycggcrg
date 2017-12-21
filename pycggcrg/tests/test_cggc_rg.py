@@ -4,11 +4,25 @@
 """
 from __future__ import absolute_import, division
 from unittest import TestCase
+from unittest.util import safe_repr
 
 from pycggcrg.pycggcrg import RGGraph, run_rg, run_cggcrg, run_cggcirg
 
 
 class TestCGGCRGWrapper(TestCase):
+
+    def assertAlmostIn(self, member, container, places=None, msg=None, delta=None):
+        for container_member in container:
+            try:
+                self.assertAlmostEqual(member, container_member, places=places, msg=msg, delta=delta)
+            except self.failureException as e:
+                pass
+            else:
+                return  # Found, no further checks
+
+        # Taken from TestCase.assertIn:
+        standardMsg = '%s not found in %s (with tolerance)' % (safe_repr(member), safe_repr(container))
+        self.fail(self._formatMessage(msg, standardMsg))
 
     def test_empty_graph(self):
         with self.assertRaises(ValueError) as e:
@@ -51,9 +65,9 @@ class TestCGGCRGWrapper(TestCase):
     def test_butterfly(self):
         g = RGGraph(5, [(0, 1), (0, 2), (1, 2), (2, 3), (2, 4), (3, 4)])
 
-        self.assertAlmostEqual(run_rg(g, sample_size=1), 1/9)
-        self.assertAlmostEqual(run_cggcrg(g), 1/9)
-        self.assertAlmostEqual(run_cggcirg(g), 1/9)
+        self.assertAlmostIn(run_rg(g, sample_size=1), (1/9, 0))
+        self.assertAlmostIn(run_cggcrg(g), (1/9, 0))
+        self.assertAlmostIn(run_cggcirg(g), (1/9, 0))
 
     def test_karate(self):
         g = RGGraph(34, [(0, 31), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8), (0, 10), (0, 11),
@@ -65,6 +79,8 @@ class TestCGGCRGWrapper(TestCase):
                          (23, 29), (24, 31), (24, 25), (24, 27), (25, 31), (26, 33), (26, 29), (27, 33), (28, 31),
                          (28, 33), (29, 32), (29, 33), (30, 33), (30, 32), (31, 32), (31, 33), (32, 33)])
 
-        self.assertAlmostEqual(run_rg(g, sample_size=1), 0.419789612)
-        self.assertAlmostEqual(run_cggcrg(g), 0.419789612)
-        self.assertAlmostEqual(run_cggcirg(g), 0.419789612)
+        lower = 0.35  # Guessed value
+        upper = 0.4197897  # Analytic result (global maximum), rounded up
+        self.assertTrue(lower <= run_rg(g, sample_size=1) <= upper)
+        self.assertTrue(lower <= run_cggcrg(g) <= upper)
+        self.assertTrue(lower <= run_cggcirg(g) <= upper)

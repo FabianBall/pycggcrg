@@ -3,6 +3,7 @@
 .. moduleauthor:: Fabian Ball <fabian.ball@kit.edu>
 """
 from math import log, ceil
+from random import randint
 
 from cggc_rg import RGGraph, RGAlgorithms
 
@@ -24,7 +25,11 @@ def make_graph(n, edge_list, check_connectedness=True):
     return None
 
 
-def run_rg(g, sample_size=2, runs=1, return_partition=False):
+def _get_seed():
+    return randint(0, 2**16 - 1)
+
+
+def run_rg(g, sample_size=2, runs=1, return_partition=False, seed=None):
     """
     Execute the single randomized greedy algorithm.
 
@@ -39,7 +44,8 @@ def run_rg(g, sample_size=2, runs=1, return_partition=False):
     :return: The modularity
     :rtype: float
     """
-    algo = RGAlgorithms(g)
+    seed = seed if seed else _get_seed()
+    algo = RGAlgorithms(g, seed)
 
     algo.run_rg(sample_size, runs)
     modularity = algo.get_modularity()
@@ -52,7 +58,7 @@ def run_rg(g, sample_size=2, runs=1, return_partition=False):
         return modularity
 
 
-def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=False):
+def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=False, seed=None):
     """
 
     :param g: A graph (use :func:`pyrg.make_graph` the create one)
@@ -65,7 +71,8 @@ def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=Fa
     :type return_partition: bool
     :return:
     """
-    algo = RGAlgorithms(g)
+    seed = seed if seed else _get_seed()
+    algo = RGAlgorithms(g, seed)
 
     if not ensemble_size:
         ensemble_size = int(ceil(log(g.n)))
@@ -81,7 +88,7 @@ def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=Fa
         return modularity
 
 
-def run_cggcirg(g, ensemble_size=None, sample_size_restart=2, return_partition=False):
+def run_cggcirg(g, ensemble_size=None, sample_size_restart=2, return_partition=False, seed=None):
     """
 
     :param g: A graph (use :func:`pyrg.make_graph` the create one)
@@ -94,7 +101,8 @@ def run_cggcirg(g, ensemble_size=None, sample_size_restart=2, return_partition=F
     :type return_partition: bool
     :return:
     """
-    algo = RGAlgorithms(g)
+    seed = seed if seed else _get_seed()
+    algo = RGAlgorithms(g, seed)
 
     if not ensemble_size:
         ensemble_size = int(ceil(log(g.n)))

@@ -5,6 +5,7 @@
 from libcpp.list cimport list as cpp_list
 from libcpp.pair cimport pair
 from libcpp.vector cimport vector
+from libc.stdlib cimport srand
 
 from pycggcrg cimport cggc_rg
 
@@ -64,11 +65,13 @@ cdef class RGAlgorithms:
     cdef cggc_rg.ModOptimizer *_thisptr
     cdef cggc_rg.Graph *_graph
 
-    def __cinit__(self, RGGraph graph):
+    def __cinit__(self, RGGraph graph, int seed):
         cdef cggc_rg.Graph *g = graph.get_graph()
 
         self._graph = g
         self._thisptr = new cggc_rg.ModOptimizer(g)
+
+        srand(seed)  # Important! Set the seed for the standard pseudo random generator
 
     def __dealloc__(self):
         if self._thisptr is not NULL:

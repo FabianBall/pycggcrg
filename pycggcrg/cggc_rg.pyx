@@ -95,7 +95,7 @@ cdef class RGAlgorithms:
         partition = self._thisptr.GetClusters().get_partition_vector()
 
         py_partition = []
-        for i in range(partition.capacity()):
+        for i in range(partition.size()):
             cluster = partition.at(i)
             py_partition.append(cluster[0])
 

@@ -44,7 +44,7 @@ def run_rg(g, sample_size=2, runs=1, return_partition=False, seed=None):
     :return: The modularity
     :rtype: float
     """
-    seed = seed if seed else _get_seed()
+    seed = seed if seed is not None else _get_seed()
     algo = RGAlgorithms(g, seed)
 
     algo.run_rg(sample_size, runs)
@@ -71,7 +71,7 @@ def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=Fa
     :type return_partition: bool
     :return:
     """
-    seed = seed if seed else _get_seed()
+    seed = seed if seed is not None else _get_seed()
     algo = RGAlgorithms(g, seed)
 
     if not ensemble_size:
@@ -101,7 +101,7 @@ def run_cggcirg(g, ensemble_size=None, sample_size_restart=2, return_partition=F
     :type return_partition: bool
     :return:
     """
-    seed = seed if seed else _get_seed()
+    seed = seed if seed is not None else _get_seed()
     algo = RGAlgorithms(g, seed)
 
     if not ensemble_size:

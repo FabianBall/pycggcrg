@@ -15,14 +15,14 @@ class TestCGGCRGWrapper(TestCase):
         for container_member in container:
             try:
                 self.assertAlmostEqual(member, container_member, places=places, msg=msg, delta=delta)
-            except self.failureException as e:
+            except self.failureException:
                 pass
             else:
                 return  # Found, no further checks
 
         # Taken from TestCase.assertIn:
-        standardMsg = '%s not found in %s (with tolerance)' % (safe_repr(member), safe_repr(container))
-        self.fail(self._formatMessage(msg, standardMsg))
+        standard_msg = '%s not found in %s (with tolerance)' % (safe_repr(member), safe_repr(container))
+        self.fail(self._formatMessage(msg, standard_msg))
 
     def test_empty_graph(self):
         with self.assertRaises(ValueError) as e:
@@ -68,6 +68,23 @@ class TestCGGCRGWrapper(TestCase):
         self.assertAlmostIn(run_rg(g, sample_size=1), (1/9, 0))
         self.assertAlmostIn(run_cggcrg(g), (1/9, 0))
         self.assertAlmostIn(run_cggcirg(g), (1/9, 0))
+
+        # Test the correct randomization by sampling
+        # - 4 of 5 results should find the global maximum of 1/9
+        # - 1 of 5 results finds the local maximum 0
+        # => The exact mean is 4/5 * 1/9 = 4/45
+        exact_mean = 4/45  # This is the exact mean modularity, determined by analyzing all join paths
+        alpha = 10**-1  # Some test tolerance
+
+        s = 100
+        q_sum = 0
+        for _ in range(s):
+            q = run_rg(g, sample_size=1)
+            q_sum += q
+
+        mean_q = q_sum / s
+
+        self.assertTrue(exact_mean - alpha <= mean_q <= exact_mean + alpha)
 
     def test_karate(self):
         g = RGGraph(34, [(0, 31), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8), (0, 10), (0, 11),

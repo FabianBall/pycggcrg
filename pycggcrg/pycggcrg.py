@@ -10,14 +10,22 @@ from cggc_rg import RGGraph, RGAlgorithms
 
 def make_graph(n, edge_list, check_connectedness=True):
     """
+    Create a graph of *n* nodes given a list of edges.
 
-    :param n:
-    :param edge_list:
-    :param check_connectedness:
-    :return:
+    *check_connectedness* should be True unless you are sure that the graph
+    is really connected.
+
+    :param n: Number of nodes
+    :type n: int
+    :param edge_list: An iterable of edges, each edge is a 2-tuple of node ids
+    :type edge_list: iterable
+    :param check_connectedness: (Optional) Perform a check if the edge_list describes a connected graph
+    :type check_connectedness: bool
+    :return: A graph, suitable to execute (CGGC)RG on
+    :rtype: :class:`cggc_rg.RGGraph`
     """
     try:
-        return RGGraph(n, edge_list, check_connectedness)
+        return RGGraph(n, list(edge_list), check_connectedness)
     except IndexError as e:
         if '_M_range_check' in e.message:
             raise ValueError('Invalid node id detected: {}'.format(e))
@@ -41,8 +49,10 @@ def run_rg(g, sample_size=2, runs=1, return_partition=False, seed=None):
     :type runs: int
     :param return_partition: (Optional) If True, returns the resulting partition
     :type return_partition: bool
-    :return: The modularity
-    :rtype: float
+    :param seed: (Optional) A seed to instantiate the pseudo RNG
+    :type seed: int
+    :return: The modularity and the partition if *return_partition* is True
+    :rtype: float | float, list
     """
     seed = seed if seed is not None else _get_seed()
     algo = RGAlgorithms(g, seed)
@@ -60,6 +70,7 @@ def run_rg(g, sample_size=2, runs=1, return_partition=False, seed=None):
 
 def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=False, seed=None):
     """
+    Run the plain CGGC-RG algorithm.
 
     :param g: A graph (use :func:`pyrg.make_graph` the create one)
     :type g: :class:`pyrg.RGGraph`
@@ -69,7 +80,10 @@ def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=Fa
     :type sample_size_restart: int
     :param return_partition: (Optional) If True, returns the resulting partition
     :type return_partition: bool
-    :return:
+    :param seed: (Optional) A seed to instantiate the pseudo RNG
+    :type seed: int
+    :return: The modularity and the partition if *return_partition* is True
+    :rtype: float | float, list
     """
     seed = seed if seed is not None else _get_seed()
     algo = RGAlgorithms(g, seed)
@@ -90,6 +104,7 @@ def run_cggcrg(g, ensemble_size=None, sample_size_restart=2, return_partition=Fa
 
 def run_cggcirg(g, ensemble_size=None, sample_size_restart=2, return_partition=False, seed=None):
     """
+    Run the iterated CGGC-RG algorithm.
 
     :param g: A graph (use :func:`pyrg.make_graph` the create one)
     :type g: :class:`pyrg.RGGraph`
@@ -99,7 +114,10 @@ def run_cggcirg(g, ensemble_size=None, sample_size_restart=2, return_partition=F
     :type sample_size_restart: int
     :param return_partition: (Optional) If True, returns the resulting partition
     :type return_partition: bool
-    :return:
+    :param seed: (Optional) A seed to instantiate the pseudo RNG
+    :type seed: int
+    :return: The modularity and the partition if *return_partition* is True
+    :rtype: float | float, list
     """
     seed = seed if seed is not None else _get_seed()
     algo = RGAlgorithms(g, seed)

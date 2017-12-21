@@ -15,7 +15,7 @@ cggc_rg_wrap = Extension('pycggcrg.cggc_rg',
 
 setup(
     name='pycggcrg',
-    version='0.2.3b0',
+    version='0.2.4b0',
     packages=['pycggcrg'],
     url='https://github.com/FabianBall/pycggcrg',
     license='TODO',

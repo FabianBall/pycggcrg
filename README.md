@@ -10,6 +10,15 @@ path `./cggc_rg`.
 Tests can be run calling `python setup.py test`.
 
 ## Changes
+0.2.5
+  - Add: more tests
+  - Add: more/better docstrings
+  - Change: 'hardened' the wrapper
+  
+0.2.4
+  - Fix: set C pseudo RNG seed
+  - Fix: get_partition used vector.capacity() instead of vector.size()
+  
 0.2.3
   - Testing connectedness of the graph is now optional
   

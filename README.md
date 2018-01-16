@@ -3,7 +3,7 @@ A Python binding for the CGGC-RG algorithm family.
 
 ## Installation
 To install run `python setup.py install` and ensure the C++ sources of 
-[*CGGC-RG*](https://github.com/FabianBall/cggc_rg) are found in the 
+[*CGGC-RG*](https://github.com/KIT-IISM-EM/cggc_rg) are found in the 
 path `./cggc_rg`.
 
 ## Tests
